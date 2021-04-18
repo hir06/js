@@ -1,0 +1,82 @@
+/*
+
+You are a developer for a university. Your current project is to develop a system for students to find courses they share with friends. The university has a system for querying courses students are enrolled in, returned as a list of (ID, course) pairs.
+
+Write a function that takes in a collection of (student ID number, course name) pairs and returns, for every pair of students, a collection of all courses they share.
+
+
+Sample Input:
+
+student_course_pairs_1 = [
+  ["58", "Linear Algebra"],
+  ["94", "Art History"],
+  ["94", "Operating Systems"],
+  ["17", "Software Design"],
+  ["58", "Mechanics"],
+  ["58", "Economics"],
+  ["17", "Linear Algebra"],
+  ["17", "Political Science"],
+  ["94", "Economics"],
+  ["25", "Economics"],
+  ["58", "Software Design"],
+]
+
+Sample Output (pseudocode, in any order):
+
+find_pairs(student_course_pairs_1) =>
+{
+  "58,17": ["Software Design", "Linear Algebra"]
+  "58,94": ["Economics"]
+  "58,25": ["Economics"]
+  "94,25": ["Economics"]
+  "17,94": []
+  "17,25": []
+}
+*/ 
+
+Soln : 
+{
+    function findPairs(data) {
+        let studentIds = [];
+        // let courses = [];
+        let grad = {};
+        let result = {};
+        let pairs = [];
+        //let index = 0;
+        data.forEach((item) => { 
+            if(!Object.keys(grad).includes(item[0])) {
+                grad[item[0]] = [item[1]];
+            }
+            else {
+                grad[item[0]] = [...grad[item[0]],item[1]]
+            }
+        })
+        console.log(grad);
+        studentIds = Object.keys(grad);
+        getSubsets(studentIds,0,2,0,[],pairs);
+        pairs.forEach(([u,v]) => {
+           let filterdArray = grad[u].filter((d) => grad[v].includes(d))
+           const left = u + ',' + v
+           result[left] = filterdArray;
+        })
+        return result;
+    }
+
+     function getSubsets(arr,index,r,i,data,result) {
+        if(index == r) {
+            result.push([...data]);
+        }
+        else if(i >= arr.length) return;
+        else {
+        data[index] = arr[i];
+        //include the element
+        getSubsets(arr,index+1,r,i+1,data,result);
+        //exclude the element
+        getSubsets (arr,index,r,i+1,data,result);
+        }
+        //return result;
+    }
+
+    console.log(findPairs(student_course_pairs_1))
+}
+
